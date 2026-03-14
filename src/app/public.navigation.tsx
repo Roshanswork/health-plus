@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { LoginScreen } from '../routes/public/login'
 import { RegisterScreen } from '../routes/public/register'
+import LandingPage from '../routes/public/landingScreen'
 
 
 
@@ -13,6 +14,7 @@ export const PublicStack = () => {
                 headerShown: false
             }}
         >
+            <Stack.Screen name="landing" component={LandingPage} />
             <Stack.Screen name="login" component={LoginScreen} />
             <Stack.Screen name="register" component={RegisterScreen} />
         </Stack.Navigator>

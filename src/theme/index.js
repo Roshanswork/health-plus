@@ -2,10 +2,11 @@ import { createTheme, darkColors, lightColors } from '@rneui/themed';
 import { Platform, StyleSheet } from 'react-native';
 
 export const defaultTheme = createTheme({
+
     lightColors: {
-        primary: '#024C9D',
+        primary: '#6848B0',
         primaryLight: '#024C9D',
-        background: '#F0F1F2',
+        background: '#795ED5',
         titleText: '#2C2B63',
         titleLight: '#4B4C7B',
         class_schedule: '#904FD3',
