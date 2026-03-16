@@ -2,9 +2,26 @@ import { Image, Pressable, Text, View, StyleSheet } from "react-native"
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { Header } from "../../../../component/Header"
 import { ImageBackgoundWrapper } from "../../../../component/ImageBackgroundWrapper"
+import { useQuery } from "@tanstack/react-query"
+import { getProfile } from "../../../services/authApi"
 
+export interface ProfileResponse {
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        mobile: string,
+        dob: string
+    };
+}
 
 export default ({ navigation }: { navigation: any }) => {
+
+    const { data } = useQuery<ProfileResponse>({
+        queryKey: ['getProfile'],
+        queryFn: getProfile
+    })
+
     return <View style={styles.container}>
         <ImageBackgoundWrapper>
             <Header />
@@ -14,10 +31,10 @@ export default ({ navigation }: { navigation: any }) => {
             </View>
             <Text style={styles.textHead}>Personal Information</Text>
             <View style={styles.infoCont}>
-                <Text style={styles.text}>Name</Text>
-                <Text style={styles.text}>Email</Text>
-                <Text style={styles.text}>Phone</Text>
-                <Text style={styles.text}>Gender</Text>
+                <Text style={styles.text}>{data?.user?.name}</Text>
+                <Text style={styles.text}>{data?.user?.email}</Text>
+                <Text style={styles.text}>{data?.user?.mobile}</Text>
+                <Text style={styles.text}>{data?.user?.dob}</Text>
             </View>
             <Text style={styles.textHead}>Appointment Information</Text>
             <View style={styles.infoCont}>

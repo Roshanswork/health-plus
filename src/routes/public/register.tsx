@@ -10,7 +10,8 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { InputWithIcon } from '../../../component/InputWithIcon';
 import { useRegister } from '../../hooks/useRegister'
 import { APPSTATE, useAppContext } from '../../app';
-import { showSuccessToast, toastConfig } from '../../lib/toast';
+import { showErrorToast, showSuccessToast, toastConfig } from '../../lib/toast';
+import { validateEmail, validatePassword } from '../../helper';
 
 
 export const RegisterScreen = () => {
@@ -31,6 +32,8 @@ export const RegisterScreen = () => {
         setFormData(priv => ({ ...priv, [name]: value }))
     }
 
+    console.log({ formData })
+
     const handleRegister = () => {
         try {
             register(formData)
@@ -38,6 +41,34 @@ export const RegisterScreen = () => {
             showSuccessToast('Looged in successfull!', toastConfig)
         } catch (error) {
             console.log('Error:', error)
+        }
+    }
+
+    const handleValidation = () => {
+        if (!formData.name) {
+            showErrorToast('Please provide a name.')
+            return
+        }
+        else if (!formData.email) {
+            showErrorToast('Please provide an email.')
+            return
+        }
+        else if (!formData.dob) {
+            showErrorToast('Please provide a DOB')
+            return
+        }
+        else if (!formData.mobile) {
+            showErrorToast('Please provide a mobile number.')
+            return
+        }
+        else if (!formData.password) {
+            showErrorToast('Please enter a password!')
+            return
+        }
+        else {
+            if (validateEmail(formData.email) && validatePassword(formData.password)) {
+                handleRegister()
+            }
         }
     }
 
@@ -110,7 +141,7 @@ export const RegisterScreen = () => {
                             fontWeight: '700',
                             letterSpacing: 1.2
                         }}
-                        onPress={handleRegister}
+                        onPress={handleValidation}
                     />
 
                     <Text style={styles.outerDontHv}>

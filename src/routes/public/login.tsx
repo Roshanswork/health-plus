@@ -5,41 +5,50 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { InputWithIcon } from '../../../component/InputWithIcon';
 import { APPSTATE, useAppContext } from '../../app';
-import { showSuccessToast, toastConfig } from '../../lib/toast';
+import { showErrorToast, showSuccessToast, toastConfig } from '../../lib/toast';
 import { useLogin } from '../../hooks/useLogin';
 import { validateEmail, validatePassword } from '../../helper';
+import { useMutation } from '@tanstack/react-query';
+import { loginApi } from '../../services/authApi';
 
 
 
 export const LoginScreen = () => {
 
-    const { mutate: login, isPending } = useLogin();
-    const [email, setEmail] = useState<any>('')
-    const [password, setPassword] = useState<any>('')
+    const [formData, setFormData] = useState({
+        email: '',
+        password: ''
+    })
 
     const navigation = useNavigation()
     const { setAppState } = useAppContext()
 
+    const handleChange = (name: string, value: string) => {
+        setFormData(priv => ({ ...priv, [name]: value }))
+    }
+
+    const mutation = useMutation({
+        mutationFn: loginApi,
+        onSuccess: async (data) => {
+            setAppState(APPSTATE.PRIVATE);
+        },
+        onError: (error) => {
+            console.log(
+                error || 'Login failed'
+            );
+        },
+    });
+
+
     const handleLoginPress = async () => {
-
-
-        if (validateEmail(email) &&
-            validatePassword(password)) {
-
-            login({ email, password })
-            setAppState(APPSTATE.PRIVATE)
-            showSuccessToast('Looged in successfull!', toastConfig)
+        if (validateEmail(formData.email) &&
+            validatePassword(formData.password)) {
+            const response = mutation.mutate({
+                email: formData.email,
+                password: formData.password
+            });
         }
     }
-
-    const handleChangeEmail = (value: string) => {
-        setEmail(value)
-    }
-
-    const handleChangePassword = (value: string) => {
-        setPassword(value)
-    }
-
 
     return (
         <View style={styles.container}>
@@ -54,15 +63,17 @@ export const LoginScreen = () => {
                     <InputWithIcon
                         placeholder='Email'
                         icon={<MaterialIcon name='mail-outline' size={37} color={'#583DB0'} />}
-                        value={email}
-                        handleChange={handleChangeEmail}
+                        value={formData.email}
+                        handleChange={handleChange}
+                        name={'email'}
                     />
 
                     <InputWithIcon
                         placeholder='Password'
                         icon={<MaterialIcon name='lock-outline' size={37} color={'#583DB0'} />}
-                        value={password}
-                        handleChange={handleChangePassword}
+                        value={formData.password}
+                        handleChange={handleChange}
+                        name={'password'}
                     />
 
                     <Text style={styles.forgotPassLable}>Forgot Password?</Text>
